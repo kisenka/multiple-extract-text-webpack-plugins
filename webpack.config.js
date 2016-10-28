@@ -4,6 +4,12 @@ var TextExtractPlugin = require('extract-text-webpack-plugin');
 var CSSExtractor = new TextExtractPlugin('[name].css');
 var SVGExtractor = new TextExtractPlugin('[name].svg');
 
+function findImageModule(compilation) {
+  return compilation.modules.filter(function (module) {
+    return module.rawRequest.match(/image\.svg/);
+  })[0]
+}
+
 module.exports = {
   entry: {
     main: './src/main'
@@ -26,6 +32,22 @@ module.exports = {
   },
   plugins: [
     SVGExtractor,
-    CSSExtractor
+    CSSExtractor,
+
+    {
+      apply: function(compiler) {
+        compiler.plugin('emit', function(compilation, done) {
+          var extractSVGCompilation = compilation.children[0];
+          var extractCSSCompilation = compilation.children[1];
+          var imageModuleFromSVGExtractCompilation = findImageModule(extractSVGCompilation);
+          var imageModuleFromCSSExtractCompilation = findImageModule(extractCSSCompilation);
+
+          console.log('SVG extractor image source: ', imageModuleFromSVGExtractCompilation._source.source());
+          console.log('CSS extractor image source: ', imageModuleFromCSSExtractCompilation._source.source());
+
+          done();
+        })
+      }
+    }
   ]
 };
