@@ -5,6 +5,7 @@
 ## Description
 
 I want to do the following thing:
+
 1. Merge many SVGs in a single sprite (done via svg-sprite-loader).
 2. Extract sprite as separate file (done via svg-sprite-loader/lib/extract-svg-plugin, tiny wrapper over the extract-text-webpack-plugin which just wraps result with <svg> tags to get valid svg markup).
 3. Return path to extracted SVG with fragment identifier which refers to specific sprite symbol, e.g. `sprite.svg#image`. This is doable unless you want to refer SVG image (which is extracted via extract plugin) in CSS which is also extracted via second extract plugin instance.
