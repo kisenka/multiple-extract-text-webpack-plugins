@@ -1,8 +1,8 @@
-var path = require('path');
-var TextExtractPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+const TextExtractPlugin = require('extract-text-webpack-plugin');
 
-var CSSExtractor = new TextExtractPlugin('[name].css');
-var SVGExtractor = new TextExtractPlugin('[name].svg');
+const CSSExtractor = new TextExtractPlugin({ filename: '[name].css' });
+const SVGExtractor = new TextExtractPlugin({ filename: '[name].svg' });
 
 function findImageModule(compilation) {
   return compilation.modules.filter(function (module) {
@@ -19,14 +19,18 @@ module.exports = {
     filename: '[name].js'
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css$/,
-        loader: CSSExtractor.extract('css')
+        use: CSSExtractor.extract({
+          use: 'css-loader'
+        })
       },
       {
         test: /\.svg$/,
-        loader: SVGExtractor.extract('raw') // emulate svg-sprite-loader
+        use: SVGExtractor.extract({
+          use: 'raw-loader' // emulate svg-sprite-loader
+        })
       }
     ]
   },
@@ -37,10 +41,10 @@ module.exports = {
     {
       apply: function(compiler) {
         compiler.plugin('emit', function(compilation, done) {
-          var extractSVGCompilation = compilation.children[0];
-          var extractCSSCompilation = compilation.children[1];
-          var imageModuleFromSVGExtractCompilation = findImageModule(extractSVGCompilation);
-          var imageModuleFromCSSExtractCompilation = findImageModule(extractCSSCompilation);
+          const  extractSVGCompilation = compilation.children[0];
+          const  extractCSSCompilation = compilation.children[1];
+          const  imageModuleFromSVGExtractCompilation = findImageModule(extractSVGCompilation);
+          const  imageModuleFromCSSExtractCompilation = findImageModule(extractCSSCompilation);
 
           console.log('SVG extractor image source: ', imageModuleFromSVGExtractCompilation._source.source());
           console.log('CSS extractor image source: ', imageModuleFromCSSExtractCompilation._source.source());

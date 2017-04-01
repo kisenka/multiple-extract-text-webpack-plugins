@@ -11,8 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "css-loader": "^0.25.0",
-    "extract-text-webpack-plugin": "^1.0.1",
+    "extract-text-webpack-plugin": "^2.1.0",
     "raw-loader": "^0.5.1",
-    "webpack": "^1.13.3"
+    "webpack": "^2.3.2"
   }
 }
